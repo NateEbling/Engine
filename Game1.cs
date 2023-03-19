@@ -56,7 +56,7 @@ public class Game1 : Game
 
     private void AddSprites()
     {
-        sprites.Add(new Player(new Vector2(1, 1)));
+        sprites.Add(new Player(new Vector2(100, 100)));
     }
 
     private void LoadSprites()

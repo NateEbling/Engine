@@ -46,11 +46,11 @@ namespace Engine
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.D))
                     MoveRight();
-                else if (Keyboard.GetState().IsKeyDown(Keys.A))
+                if (Keyboard.GetState().IsKeyDown(Keys.A))
                     MoveLeft();
-                else if (Keyboard.GetState().IsKeyDown(Keys.W))
+                if (Keyboard.GetState().IsKeyDown(Keys.W))
                     MoveUp();
-                else if (Keyboard.GetState().IsKeyDown(Keys.S))
+                if (Keyboard.GetState().IsKeyDown(Keys.S))
                     MoveDown();
             }
 
