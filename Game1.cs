@@ -11,16 +11,22 @@ public class Game1 : Game
     private SpriteBatch _spriteBatch;
 
     public List<Sprite> sprites = new List<Sprite>();
+    public Map map = new Map();
 
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+
+        Resolution.Init(ref _graphics);
+        Resolution.SetVirtualResolution(1280, 720);
+        Resolution.SetResolution(1280, 720, false);
     }
 
     protected override void Initialize()
     {
+        Camera.Initialize();
         AddSprites();
 
         base.Initialize();
@@ -30,7 +36,8 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         
-        LoadSprites();
+        map.Load(Content);
+        LoadLevel();
     }
 
     protected override void Update(GameTime gameTime)
@@ -38,6 +45,8 @@ public class Game1 : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
+        UpdateCamera();
+        map.Update(sprites);
         UpdateSprites();
 
         base.Update(gameTime);
@@ -47,16 +56,31 @@ public class Game1 : Game
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
-        _spriteBatch.Begin();
+        _spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend, SamplerState.LinearClamp, 
+        DepthStencilState.None, RasterizerState.CullNone, null, Camera.GetTransformMatrix());
+        map.DrawWalls(_spriteBatch);
         DrawSprites();
         _spriteBatch.End();
 
         base.Draw(gameTime);
     }
 
+    public void LoadLevel()
+    {
+        AddSprites();
+        map.LoadMap(Content);
+        // map.GenerateBorders();
+
+        map.walls.Add(new Wall(Content.Load<Texture2D>("test"), new Rectangle(0, 0, 64, 64)));
+        
+        LoadSprites();
+        
+    }
+
     private void AddSprites()
     {
-        sprites.Add(new Player(new Vector2(1, 1)));
+        sprites.Add(new Player(new Vector2(100, 100)));
+        
     }
 
     private void LoadSprites()
@@ -80,5 +104,13 @@ public class Game1 : Game
         {
             sprite.Draw(_spriteBatch);
         }
+    }
+
+    private void UpdateCamera()
+    {
+      if (sprites.Count == 0)
+        return;
+
+      Camera.Update(sprites[0].position);
     }
 }
