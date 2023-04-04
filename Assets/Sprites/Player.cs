@@ -29,7 +29,7 @@ namespace Engine
 
         public override void Load(ContentManager content)
         {
-            texture = content.Load<Texture2D>("Square");
+            texture = content.Load<Texture2D>("Sprites/Square");
 
             base.Load(content);
         }

@@ -13,8 +13,9 @@ namespace Engine
         {
             Texture2D image = content.Load<Texture2D>(filePath);
 
-            if (usingPipeline == false)
-                PremultiplyTexture(image);
+            // If not using the content pipeline, need to premultiply the alpha of a texture manually
+            // if (usingPipeline == false)
+            //     PremultiplyTexture(image);
 
             return image;
         }
