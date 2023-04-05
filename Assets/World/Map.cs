@@ -31,11 +31,11 @@ namespace Engine
             test = content.Load<Texture2D>("test");
         }
 
-        public Rectangle CheckCollisions(Rectangle input)
+        public Rectangle CheckCollisions(Rectangle Input)
         {
             foreach (Wall wall in walls)
             {
-                if (wall != null && wall.wall.Intersects(input) == true)
+                if (wall != null && wall.wall.Intersects(Input) == true)
                     return wall.wall;
             }
 

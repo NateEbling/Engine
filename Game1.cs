@@ -68,7 +68,7 @@ public class Game1 : Game
         map.LoadMap(Content);
         // map.GenerateBorders();
 
-        map.walls.Add(new Wall(Content.Load<Texture2D>("Placeholders/defaultBorder"), new Rectangle(0, 0, 64, 64)));
+        map.walls.Add(new Wall(Content.Load<Texture2D>("test"), new Rectangle(0, 0, 64, 64)));
         
         LoadSprites();
         

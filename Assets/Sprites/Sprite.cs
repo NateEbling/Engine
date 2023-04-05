@@ -18,7 +18,6 @@ namespace Engine
         private Texture2D boundingBoxTexture;
         const bool drawBoundingBoxes = true;
 
-
         public Sprite() {}
 
         public Sprite(Texture2D texture)
