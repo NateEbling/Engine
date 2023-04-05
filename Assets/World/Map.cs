@@ -31,11 +31,11 @@ namespace Engine
             test = content.Load<Texture2D>("test");
         }
 
-        public Rectangle CheckCollisions(Rectangle Input)
+        public Rectangle CheckCollisions(Rectangle input)
         {
             foreach (Wall wall in walls)
             {
-                if (wall != null && wall.wall.Intersects(Input) == true)
+                if (wall != null && wall.wall.Intersects(input) == true)
                     return wall.wall;
             }
 
@@ -52,30 +52,20 @@ namespace Engine
         {
             foreach (Wall wall in walls)
             {
-                if (wall.texture != null && wall.active == true)
-                    spriteBatch.Draw(wall.texture, new Vector2(wall.wall.X, wall.wall.Y), wall.wall, drawColor, 0f, 
+                if (wall._texture != null && wall.active == true)
+                    spriteBatch.Draw(wall._texture, new Vector2(wall.wall.X, wall.wall.Y), wall.wall, drawColor, 0f, 
                     Vector2.Zero, 1f, SpriteEffects.None, 0.7f);
                 else spriteBatch.Draw(defaultTile, new Vector2(wall.wall.X, wall.wall.Y), wall.wall, drawColor, 0f,
                 Vector2.Zero, 1f, SpriteEffects.None, 0.7f);
             }
         }
 
-        public void GenerateBorders()
+        public void AddFloor(int num, int x, int y)
         {
-
-            for (int i = 0; i < mapMatrix.GetLength(0); i++)
-                for (int j = 0; j < mapMatrix.GetLength(1); j++)
-                {
-                    if (i == 0 || j == 0)
-                        mapMatrix[i, j] = 1;
-                    // else if (i == mapMatrix.GetLength(0))
-                    //     mapMatrix[i, j] = 1;
-                    // else if (j == mapMatrix.GetLength(1))
-                    //     mapMatrix[i, j] = 1;
-
-                    if (mapMatrix[i, j] == 1)
-                        this.walls.Add(new Wall(defaultBorder, new Rectangle(i * 64, j * 64, 64, 64)));
-                }
+            for (int i = 0; i < num; i++)
+            {
+                this.walls.Add(new Wall(defaultBorder, new Rectangle(x + (i * 64), y, 64, 64)));
+            }
         }
 
         public Point GetTileIndex(Vector2 inputPosition)

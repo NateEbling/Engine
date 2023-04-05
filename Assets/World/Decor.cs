@@ -17,7 +17,7 @@ namespace Engine
 
         public Decor(Vector2 inputPosition, string inputImagePath, float inputDepth, bool collide)
         {
-            position = inputPosition;
+            _position = inputPosition;
             imagePath = inputImagePath;
             layerDepth = inputDepth;
             collidable = collide;
@@ -25,7 +25,7 @@ namespace Engine
 
         public Decor(Vector2 inputPosition, string inputImagePath, float inputDepth)
         {
-            position = inputPosition;
+            _position = inputPosition;
             imagePath = inputImagePath;
             layerDepth = inputDepth;
             isActive = true;
@@ -34,31 +34,31 @@ namespace Engine
 
         public virtual void Load(ContentManager content, string asset)
         {
-            texture = TextureLoader.Load(asset, content);
-            texture.Name = asset;
+            _texture = TextureLoader.Load(asset, content);
+            _texture.Name = asset;
 
-            boundingBoxWidth = texture.Width;
-            boundingBoxHeight = texture.Height;
+            boundingBoxWidth = _texture.Width;
+            boundingBoxHeight = _texture.Height;
             
             if (sourceRect == Rectangle.Empty)
             {
-                sourceRect = new Rectangle(0, 0, texture.Width, texture.Height);
+                sourceRect = new Rectangle(0, 0, _texture.Width, _texture.Height);
             }
         }
 
         public void SetImage(Texture2D input, string newPath)
         {
-            texture = input;
+            _texture = input;
             imagePath = newPath;
-            boundingBoxWidth = sourceRect.Width = texture.Width;
-            boundingBoxHeight = sourceRect.Height = texture.Height;
+            boundingBoxWidth = sourceRect.Width = _texture.Width;
+            boundingBoxHeight = sourceRect.Height = _texture.Height;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (texture != null && isActive == true)
+            if (_texture != null && isActive == true)
             {
-                spriteBatch.Draw(texture, position, sourceRect, drawColor, rotation, Vector2.Zero, scale, 
+                spriteBatch.Draw(_texture, _position, sourceRect, drawColor, rotation, Vector2.Zero, scale, 
                 SpriteEffects.None, layerDepth);
             }
             base.Draw(spriteBatch);

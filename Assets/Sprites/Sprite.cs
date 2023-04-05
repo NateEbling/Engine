@@ -1,65 +1,77 @@
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 
 namespace Engine
 {
     public class Sprite
     {
-        protected Texture2D texture;
-        public bool isActive = true, collidable = true;
-        public Vector2 position, startPosition = new Vector2(-1, -1), direction = new Vector2(1, 0);
-        public float scale = 1f, rotation = 0f, layerDepth = 0.5f;
+        protected Texture2D _texture;
+        public Vector2 _position;
         public Color drawColor = Color.White;
-
+        public float scale = 1f, rotation = 0f;
+        public float layerDepth = 0.5f;
+        public bool isActive = true;
+        protected Vector2 center;
+        public bool collidable = true;
         protected int boundingBoxWidth, boundingBoxHeight;
-        protected Vector2 boundingBoxOffset, center;
-        private Texture2D boundingBoxTexture;
+        protected Vector2 boundingBoxOffset;
+        protected int boundingBoxWidthTrim, boundingBoxHeightTrim;
+        protected int boundingBoxWidthTrimOffset, boundingBoxHeightTrimOffset;
+        protected int boundingBoxBottomTrim;
+        Texture2D boundingBoxImage;
         const bool drawBoundingBoxes = true;
-
-        public Sprite() {}
-
-        public Sprite(Texture2D texture)
-        {
-            this.texture = texture;
-        }
+        protected Vector2 direction = new Vector2(1, 0); // right
+        public Vector2 startPosition = new Vector2(-1, -1);
 
         public Rectangle BoundingBox
         {
             get
             {
-                return new Rectangle((int)(position.X + boundingBoxOffset.X), (int)(position.Y + boundingBoxOffset.Y),
-                                     boundingBoxWidth, boundingBoxHeight);
+                return new Rectangle((int)(_position.X + boundingBoxOffset.X + boundingBoxWidthTrim), 
+                (int)(_position.Y + boundingBoxOffset.Y + boundingBoxHeightTrim), 
+                boundingBoxWidth - boundingBoxWidthTrim * 2, 
+                boundingBoxHeight - boundingBoxHeightTrim * 2 - boundingBoxBottomTrim);
             }
         }
 
         public Rectangle Rectangle
         {
-            get { return new Rectangle((int)position.X, (int)position.Y, texture.Width, texture.Height); }
+            get { return new Rectangle((int)_position.X, (int)_position.Y, _texture.Width, _texture.Height); }
         }
 
-        public virtual bool CheckCollisions(Rectangle input)
+        public Sprite()
         {
-            return BoundingBox.Intersects(input);
+
+        }
+
+        public Sprite(Texture2D texture)
+        {
+            _texture = texture;
         }
 
         public virtual void Initialize()
         {
-            if (position == new Vector2(-1, -1))
-                startPosition = position;
+            if (startPosition == new Vector2(-1, -1))
+                startPosition = _position;
+        }
+
+        public virtual void SetToDefaultPosition()
+        {
+            _position = startPosition;
         }
 
         public virtual void Load(ContentManager content)
         {
-            boundingBoxTexture = content.Load<Texture2D>("boundingBox");
+            boundingBoxImage = content.Load<Texture2D>("boundingBox");
 
             CalculateCenter();
 
-            if (texture != null)
+            if (_texture != null)
             {
-                boundingBoxWidth = texture.Width;
-                boundingBoxHeight = texture.Height;
+                boundingBoxWidth = _texture.Width;
+                boundingBoxHeight = _texture.Height;
             }
         }
 
@@ -68,28 +80,28 @@ namespace Engine
 
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch) 
+        public virtual bool CheckCollisions(Rectangle input)
         {
-            if (boundingBoxTexture != null && drawBoundingBoxes == true && isActive == true)
-            {
-                spriteBatch.Draw(boundingBoxTexture, new Vector2(BoundingBox.X, BoundingBox.Y), BoundingBox,
-                                 new Color(120, 120, 120, 120), 0f, Vector2.Zero, 1f, SpriteEffects.None, 0.1f);
-            }
-            if (isActive == true)
-            {
-                spriteBatch.Draw(texture, position, null, drawColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 
-                                 layerDepth);
-            }
+            return BoundingBox.Intersects(input);
+        }
+
+        public virtual void Draw(SpriteBatch spriteBatch)
+        {
+            if (boundingBoxImage != null && drawBoundingBoxes == true && isActive == true)
+                spriteBatch.Draw(boundingBoxImage, new Vector2(BoundingBox.X, BoundingBox.Y), BoundingBox, new Color(120, 120, 120, 120),
+                  0f, Vector2.Zero, 1f, SpriteEffects.None, 0.1f);
+
+            if (_texture != null && isActive == true)
+                spriteBatch.Draw(_texture, _position, null, drawColor, rotation, Vector2.Zero, scale, SpriteEffects.None, layerDepth);
         }
 
         private void CalculateCenter()
         {
-            if (texture == null)
+            if (_texture == null)
                 return;
-    
-            center.X = texture.Width / 2;
-            center.Y = texture.Height / 2;
-            
+
+            center.X = _texture.Width / 2;
+            center.Y = _texture.Height / 2;
         }
     }
 }

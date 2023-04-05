@@ -10,13 +10,13 @@ namespace Engine
     {
         public Rectangle wall;
         public bool active = true;
-        public Texture2D texture;
+        public Texture2D _texture;
 
         public Wall() {}
 
         public Wall(Texture2D inputTexture, Rectangle inputRectangle)
         {
-            texture = inputTexture;
+            _texture = inputTexture;
             wall = inputRectangle;
         }
 

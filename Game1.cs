@@ -13,6 +13,9 @@ public class Game1 : Game
     public List<Sprite> sprites = new List<Sprite>();
     public Map map = new Map();
 
+    private int resX = 1280, resY = 720;
+    private bool isFullscreen = false;
+
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -20,8 +23,8 @@ public class Game1 : Game
         IsMouseVisible = true;
 
         Resolution.Init(ref _graphics);
-        Resolution.SetVirtualResolution(1280, 720);
-        Resolution.SetResolution(1280, 720, false);
+        Resolution.SetVirtualResolution(resX, resY);
+        Resolution.SetResolution(resX, resY, isFullscreen);
     }
 
     protected override void Initialize()
@@ -42,10 +45,11 @@ public class Game1 : Game
 
     protected override void Update(GameTime gameTime)
     {
+        //UserInput.Update();
         UpdateCamera();
         map.Update(sprites);
         UpdateSprites();
-
+    
         base.Update(gameTime);
     }
 
@@ -66,18 +70,16 @@ public class Game1 : Game
     {
         AddSprites();
         map.LoadMap(Content);
-        // map.GenerateBorders();
+        map.AddFloor(100, -1000, 400);
 
         map.walls.Add(new Wall(Content.Load<Texture2D>("test"), new Rectangle(0, 0, 64, 64)));
         
         LoadSprites();
-        
     }
 
     private void AddSprites()
     {
         sprites.Add(new Player(new Vector2(300, 300)));
-        
     }
 
     private void LoadSprites()
@@ -108,6 +110,6 @@ public class Game1 : Game
       if (sprites.Count == 0)
         return;
 
-      Camera.Update(sprites[0].position);
+      Camera.Update(sprites[0]._position);
     }
 }
