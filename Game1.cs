@@ -42,9 +42,6 @@ public class Game1 : Game
 
     protected override void Update(GameTime gameTime)
     {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
-
         UpdateCamera();
         map.Update(sprites);
         UpdateSprites();
@@ -71,7 +68,7 @@ public class Game1 : Game
         map.LoadMap(Content);
         // map.GenerateBorders();
 
-        map.walls.Add(new Wall(Content.Load<Texture2D>("Placeholders/defaultTile"), new Rectangle(0, 0, 64, 64)));
+        map.walls.Add(new Wall(Content.Load<Texture2D>("Placeholders/defaultBorder"), new Rectangle(0, 0, 64, 64)));
         
         LoadSprites();
         

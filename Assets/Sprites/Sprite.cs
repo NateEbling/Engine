@@ -9,7 +9,7 @@ namespace Engine
     {
         protected Texture2D texture;
         public bool isActive = true, collidable = true;
-        public Vector2 position, startPosition = new Vector2(-1, -1), direction = new Vector2(1, 0); // Default dir right
+        public Vector2 position, startPosition = new Vector2(-1, -1), direction = new Vector2(1, 0);
         public float scale = 1f, rotation = 0f, layerDepth = 0.5f;
         public Color drawColor = Color.White;
 

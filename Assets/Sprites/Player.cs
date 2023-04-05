@@ -79,6 +79,8 @@ namespace Engine
 
         // private void UpdateMovement(List<Sprite> sprites, Map map)
         // {
+        //     CheckInput();
+
         //     if (velocity.X != 0 && CheckCollisions(map, sprites, true) == true)
         //         velocity.X = 0;
 
@@ -183,7 +185,7 @@ namespace Engine
             }
 
             // Checking wall collision 
-            Rectangle wallCollision = map.CheckCollision(futureBoundingBox);
+            Rectangle wallCollision = map.CheckCollisions(futureBoundingBox);
 
             if (wallCollision != Rectangle.Empty)
             {
@@ -218,8 +220,7 @@ namespace Engine
         {
             Rectangle futureHitBox = new Rectangle((int)(position.X + boundingBoxOffset.X), 
             (int)(position.Y + boundingBoxOffset.Y + (velocity.Y + gravity)), boundingBoxWidth, boundingBoxHeight);
-            return map.CheckCollision(futureHitBox);
-        }
-        
+            return map.CheckCollisions(futureHitBox);
+        } 
     }
 }
