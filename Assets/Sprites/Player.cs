@@ -2,12 +2,13 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace Engine
 {
     public class Player : Sprite
     {
-        public Vector2 velocity;
+        public Vector2 velocity = Vector2.Zero;
         protected float decel = 1.7f, accel = 0.8f, maxSpeed = 5f, gravity = 1f, jumpVelo = 16f, maxFallVelo = 32f;
         protected bool jumping;
         public static bool applyGravity = false;
@@ -30,14 +31,13 @@ namespace Engine
         public override void Load(ContentManager content)
         {
             texture = content.Load<Texture2D>("Sprites/Square");
-
             base.Load(content);
         }
 
-        public override void Update()
+        public override void Update(List<Sprite> sprites, Map map)
         {
-            CheckInput();
-            base.Update();
+            UpdateMovement(sprites, map);
+            base.Update(sprites, map);
         }
 
         private void CheckInput()
@@ -58,26 +58,46 @@ namespace Engine
             {
 
             }
-
-            UpdateMovement();
         }
 
-        private void UpdateMovement()
+        private void UpdateMovement(List<Sprite> sprites, Map map)
         {   
+            CheckInput();
+
             position.X += velocity.X;
             position.Y += velocity.Y;
 
             velocity.X = ReturnToZero(velocity.X, decel);
             velocity.Y = ReturnToZero(velocity.Y, decel);
 
-            // if (applyGravity == true)
-            //     ApplyGravity();
-            // else 
-            //     velocity.Y = ReturnToZero(velocity.X, decel);
+            if (applyGravity == true)
+                ApplyGravity(map);
+            else 
+                velocity.Y = ReturnToZero(velocity.X, decel);
         
         }
 
-        private void ApplyGravity()
+        // private void UpdateMovement(List<Sprite> sprites, Map map)
+        // {
+        //     if (velocity.X != 0 && CheckCollisions(map, sprites, true) == true)
+        //         velocity.X = 0;
+
+        //     position.X += velocity.X;
+
+        //     if(velocity.Y != 0 && CheckCollisions(map, sprites, false) == true)
+        //         velocity.Y = 0;
+
+        //     position.Y += velocity.Y;
+
+        //     if (applyGravity == true)
+        //         ApplyGravity(map);
+
+        //     velocity.X = ReturnToZero(velocity.X, decel);
+        //     if (!applyGravity)
+        //         velocity.Y = ReturnToZero(velocity.Y, decel);
+        // }
+
+        private void ApplyGravity(Map map)
         {
 
         }
@@ -129,6 +149,77 @@ namespace Engine
             return val;
         }
 
+        protected virtual bool CheckCollisions(Map map, List<Sprite> sprites, bool xAxis)
+        {
+            Rectangle futureBoundingBox = BoundingBox;
+
+            int maxX = (int)maxSpeed;
+            int maxY = (int)maxSpeed;
+
+            if (applyGravity == true)
+                maxY = (int)jumpVelo;
+
+            if (xAxis == true && velocity.X != 0)
+            {
+                if (velocity.X > 0)
+                futureBoundingBox.X += maxX;
+                else
+                futureBoundingBox.X -= maxX;
+            }
+            else if (!applyGravity && !xAxis && velocity.Y != 0)
+            {
+                if (velocity.Y > 0)
+                futureBoundingBox.Y += maxY;
+                else
+                futureBoundingBox.Y -= maxY;
+            }
+
+            else if (applyGravity && !xAxis && velocity.Y != gravity)
+            {
+                if (velocity.Y > 0)
+                futureBoundingBox.Y += maxY;
+                else
+                futureBoundingBox.Y -= maxY;
+            }
+
+            // Checking wall collision 
+            Rectangle wallCollision = map.CheckCollision(futureBoundingBox);
+
+            if (wallCollision != Rectangle.Empty)
+            {
+                if (applyGravity == true && velocity.Y >= gravity && (futureBoundingBox.Bottom > wallCollision.Top - maxSpeed)
+                && (futureBoundingBox.Bottom <= wallCollision.Top + velocity.Y))
+                {
+                LandResponse(wallCollision);
+                return true;
+                }
+                else
+                return true;
+            }
+
+            // Check for sprite collisions
+            foreach (var sprite in sprites)
+            {
+                if (sprite != this && sprite.isActive == true && sprite.collidable == true && sprite.CheckCollisions(futureBoundingBox) == true)
+                return true;
+            }
+
+            return false;
+        }
+
+        public void LandResponse(Rectangle wallCollision)
+        {
+            position.Y = wallCollision.Top - (boundingBoxHeight + boundingBoxOffset.Y);
+            velocity.Y = 0;
+            jumping = false;
+        }
+
+        protected Rectangle OnGround(Map map)
+        {
+            Rectangle futureHitBox = new Rectangle((int)(position.X + boundingBoxOffset.X), 
+            (int)(position.Y + boundingBoxOffset.Y + (velocity.Y + gravity)), boundingBoxWidth, boundingBoxHeight);
+            return map.CheckCollision(futureHitBox);
+        }
         
     }
 }

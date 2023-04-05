@@ -71,7 +71,7 @@ public class Game1 : Game
         map.LoadMap(Content);
         // map.GenerateBorders();
 
-        map.walls.Add(new Wall(Content.Load<Texture2D>("test"), new Rectangle(0, 0, 64, 64)));
+        map.walls.Add(new Wall(Content.Load<Texture2D>("Placeholders/defaultTile"), new Rectangle(0, 0, 64, 64)));
         
         LoadSprites();
         
@@ -79,7 +79,7 @@ public class Game1 : Game
 
     private void AddSprites()
     {
-        sprites.Add(new Player(new Vector2(100, 100)));
+        sprites.Add(new Player(new Vector2(300, 300)));
         
     }
 
@@ -95,7 +95,7 @@ public class Game1 : Game
     private void UpdateSprites()
     {
         foreach (Sprite sprite in sprites)
-            sprite.Update();
+            sprite.Update(sprites, map);
     }
 
     private void DrawSprites() 

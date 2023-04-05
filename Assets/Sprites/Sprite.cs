@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace Engine
 {
@@ -63,7 +64,7 @@ namespace Engine
             }
         }
 
-        public virtual void Update()
+        public virtual void Update(List<Sprite> sprites, Map map)
         {
 
         }

@@ -45,7 +45,7 @@ namespace Engine
         public void Update(List<Sprite> sprites)
         {
             foreach (Sprite sprite in sprites)
-                sprite.Update();
+                sprite.Update(sprites, this);
         }
 
         public void DrawWalls(SpriteBatch spriteBatch)
@@ -84,6 +84,17 @@ namespace Engine
                 return new Point(-1, -1);
 
             return new Point((int)inputPosition.X / tileSize, (int)inputPosition.Y / tileSize);
+        }
+
+        public Rectangle CheckCollision(Rectangle Input)
+        {
+            foreach (var w in walls)
+            {
+                if (w != null && w.wall.Intersects(Input) == true)
+                return w.wall;
+            }
+
+            return Rectangle.Empty;
         }
     }
 }
